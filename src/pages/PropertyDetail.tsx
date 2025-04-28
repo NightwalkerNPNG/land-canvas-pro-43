@@ -1,7 +1,7 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import Header from '@/components/Header';
@@ -20,6 +20,21 @@ const markerIcon = L.icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
+
+// Create a MapContent component to use the center and zoom props
+const MapContent = ({ center, zoom, children }: { 
+  center: L.LatLngExpression; 
+  zoom: number; 
+  children: React.ReactNode;
+}) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [center, zoom, map]);
+  
+  return <>{children}</>;
+};
 
 // Sample property data
 const propertyDetails = {
@@ -332,23 +347,23 @@ const PropertyDetail = () => {
             </h3>
             <div className="h-[400px] rounded-lg overflow-hidden">
               <MapContainer 
-                center={propertyDetails.coordinates as L.LatLngExpression}
-                zoom={14}
                 style={{ height: '100%', width: '100%' }}
               >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Marker 
-                  position={propertyDetails.coordinates as L.LatLngExpression}
-                  icon={markerIcon}
-                >
-                  <Popup>
-                    {propertyDetails.title}<br />
-                    {propertyDetails.address}
-                  </Popup>
-                </Marker>
+                <MapContent center={propertyDetails.coordinates} zoom={14}>
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  />
+                  <Marker 
+                    position={propertyDetails.coordinates}
+                    icon={markerIcon}
+                  >
+                    <Popup>
+                      {propertyDetails.title}<br />
+                      {propertyDetails.address}
+                    </Popup>
+                  </Marker>
+                </MapContent>
               </MapContainer>
             </div>
           </div>

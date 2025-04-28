@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { PropertyCardProps } from './PropertyCard';
 import { Button } from '@/components/ui/button';
@@ -63,6 +63,21 @@ const propertyLocations: PropertyLocation[] = [
   },
 ];
 
+// Create a MapContent component to use the center and zoom props
+const MapContent = ({ center, zoom, children }: { 
+  center: L.LatLngExpression; 
+  zoom: number; 
+  children: React.ReactNode;
+}) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [center, zoom, map]);
+  
+  return <>{children}</>;
+};
+
 const InteractiveMap = () => {
   const [mapHeight, setMapHeight] = useState('500px');
   const [mapCenter, setMapCenter] = useState<[number, number]>([37.0902, -95.7129]); // US center
@@ -101,46 +116,46 @@ const InteractiveMap = () => {
         >
           <MapContainer 
             key={`map-${mapCenter.join('-')}-${mapZoom}`}
-            center={mapCenter as L.LatLngExpression}
-            zoom={mapZoom}
             style={{ height: '100%', width: '100%' }}
           >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            
-            {propertyLocations.map((property) => (
-              <Marker 
-                key={property.id} 
-                position={property.coordinates as L.LatLngExpression}
-                icon={markerIcon}
-              >
-                <Popup>
-                  <div className="w-60">
-                    <img 
-                      src={property.imageUrl} 
-                      alt={property.title} 
-                      className="w-full h-32 object-cover rounded mb-2"
-                    />
-                    <h3 className="font-medium text-sm">{property.title}</h3>
-                    <p className="text-estate-navy font-semibold text-sm">
-                      {property.priceUnit === 'rent' 
-                        ? `$${property.price}/month` 
-                        : `$${property.price.toLocaleString()}`
-                      }
-                    </p>
-                    <p className="text-xs text-gray-500 mb-2">{property.location}</p>
-                    <Button 
-                      size="sm" 
-                      className="w-full text-xs bg-estate-navy hover:bg-estate-navy/90"
-                    >
-                      View Details
-                    </Button>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
+            <MapContent center={mapCenter} zoom={mapZoom}>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              
+              {propertyLocations.map((property) => (
+                <Marker 
+                  key={property.id} 
+                  position={property.coordinates}
+                  icon={markerIcon}
+                >
+                  <Popup>
+                    <div className="w-60">
+                      <img 
+                        src={property.imageUrl} 
+                        alt={property.title} 
+                        className="w-full h-32 object-cover rounded mb-2"
+                      />
+                      <h3 className="font-medium text-sm">{property.title}</h3>
+                      <p className="text-estate-navy font-semibold text-sm">
+                        {property.priceUnit === 'rent' 
+                          ? `$${property.price}/month` 
+                          : `$${property.price.toLocaleString()}`
+                        }
+                      </p>
+                      <p className="text-xs text-gray-500 mb-2">{property.location}</p>
+                      <Button 
+                        size="sm" 
+                        className="w-full text-xs bg-estate-navy hover:bg-estate-navy/90"
+                      >
+                        View Details
+                      </Button>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+            </MapContent>
           </MapContainer>
         </div>
         
