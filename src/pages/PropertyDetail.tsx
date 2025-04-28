@@ -332,16 +332,16 @@ const PropertyDetail = () => {
             </h3>
             <div className="h-[400px] rounded-lg overflow-hidden">
               <MapContainer 
-                center={propertyDetails.coordinates}
+                center={propertyDetails.coordinates as L.LatLngExpression}
                 zoom={14}
                 style={{ height: '100%', width: '100%' }}
               >
                 <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <Marker 
-                  position={propertyDetails.coordinates}
+                  position={propertyDetails.coordinates as L.LatLngExpression}
                   icon={markerIcon}
                 >
                   <Popup>

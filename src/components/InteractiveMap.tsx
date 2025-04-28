@@ -100,19 +100,20 @@ const InteractiveMap = () => {
           style={{ height: mapHeight }}
         >
           <MapContainer 
-            center={mapCenter}
+            key={`map-${mapCenter.join('-')}-${mapZoom}`}
+            center={mapCenter as L.LatLngExpression}
             zoom={mapZoom}
             style={{ height: '100%', width: '100%' }}
           >
             <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             
             {propertyLocations.map((property) => (
               <Marker 
                 key={property.id} 
-                position={property.coordinates}
+                position={property.coordinates as L.LatLngExpression}
                 icon={markerIcon}
               >
                 <Popup>

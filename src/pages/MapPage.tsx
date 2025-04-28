@@ -210,20 +210,20 @@ const MapPage = () => {
               
               <div className="w-full md:w-3/4 bg-white rounded-lg shadow-md h-[700px] relative">
                 <MapContainer 
-                  center={defaultCenter}
+                  center={defaultCenter as L.LatLngExpression}
                   zoom={defaultZoom}
                   style={{ height: '100%', width: '100%' }}
                   className="rounded-lg"
                 >
                   <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
                   
                   {propertyLocations.map((property) => (
                     <Marker 
                       key={property.id} 
-                      position={property.coordinates}
+                      position={property.coordinates as L.LatLngExpression}
                       icon={markerIcon}
                     >
                       <Popup>
