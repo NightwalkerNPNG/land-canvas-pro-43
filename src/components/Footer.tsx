@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className="bg-estate-navy text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div id="about" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
             <h3 className="text-xl font-playfair font-semibold mb-4">
               <span className="text-estate-gold">Estate</span>Pro
@@ -69,7 +69,7 @@ const Footer = () => {
             </ul>
           </div>
           
-          <div>
+          <div id="contact">
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-3 text-gray-300 text-sm">
               <li className="flex items-start">

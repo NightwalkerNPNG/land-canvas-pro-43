@@ -1,11 +1,41 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, Home, MapPin } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleScrollNavigation = (id: string) => {
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: id } });
+    } else {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth'
+        });
+      }
+    }
+    setIsMenuOpen(false);
+  };
+
+  useEffect(() => {
+    // Check for scroll instructions when navigating to home page
+    if (location.pathname === '/' && location.state && (location.state as any).scrollTo) {
+      setTimeout(() => {
+        const element = document.getElementById((location.state as any).scrollTo);
+        if (element) {
+          element.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    }
+  }, [location]);
 
   return (
     <header className="border-b bg-white sticky top-0 z-50">
@@ -28,17 +58,23 @@ const Header = () => {
           <Link to="/map" className="text-sm font-medium hover:text-estate-gold transition-colors">
             Map
           </Link>
-          <Link to="/about" className="text-sm font-medium hover:text-estate-gold transition-colors">
+          <button 
+            onClick={() => handleScrollNavigation('about')} 
+            className="text-sm font-medium hover:text-estate-gold transition-colors"
+          >
             About
-          </Link>
-          <Link to="/contact" className="text-sm font-medium hover:text-estate-gold transition-colors">
+          </button>
+          <button
+            onClick={() => handleScrollNavigation('contact')}
+            className="text-sm font-medium hover:text-estate-gold transition-colors"
+          >
             Contact
-          </Link>
+          </button>
         </nav>
         
         <div className="hidden md:flex items-center">
-          <Button size="sm" className="bg-estate-navy hover:bg-estate-navy/90">
-            List Property
+          <Button size="sm" className="bg-estate-navy hover:bg-estate-navy/90" asChild>
+            <Link to="/list-property">List Property</Link>
           </Button>
         </div>
         
@@ -77,24 +113,22 @@ const Header = () => {
             >
               Map
             </Link>
-            <Link 
-              to="/about" 
-              className="text-sm font-medium p-2 hover:bg-estate-lightGray rounded"
-              onClick={() => setIsMenuOpen(false)}
+            <button 
+              onClick={() => handleScrollNavigation('about')}
+              className="text-sm font-medium p-2 hover:bg-estate-lightGray rounded text-left"
             >
               About
-            </Link>
-            <Link 
-              to="/contact" 
-              className="text-sm font-medium p-2 hover:bg-estate-lightGray rounded"
-              onClick={() => setIsMenuOpen(false)}
+            </button>
+            <button 
+              onClick={() => handleScrollNavigation('contact')}
+              className="text-sm font-medium p-2 hover:bg-estate-lightGray rounded text-left"
             >
               Contact
-            </Link>
+            </button>
             
             <div className="pt-2">
-              <Button size="sm" className="w-full bg-estate-navy hover:bg-estate-navy/90">
-                List Property
+              <Button size="sm" className="w-full bg-estate-navy hover:bg-estate-navy/90" asChild>
+                <Link to="/list-property">List Property</Link>
               </Button>
             </div>
           </nav>

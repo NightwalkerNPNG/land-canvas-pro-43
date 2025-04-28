@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { PropertyCardProps } from './PropertyCard';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 // Fix for Leaflet marker icons with Webpack/Vite
 import L from 'leaflet';
@@ -115,7 +116,6 @@ const InteractiveMap = () => {
           style={{ height: mapHeight }}
         >
           <MapContainer 
-            key={`map-${mapCenter.join('-')}-${mapZoom}`}
             style={{ height: '100%', width: '100%' }}
           >
             <MapContent center={mapCenter} zoom={mapZoom}>
@@ -125,6 +125,7 @@ const InteractiveMap = () => {
                 <Marker 
                   key={property.id} 
                   position={property.coordinates}
+                  icon={markerIcon}
                 >
                   <Popup>
                     <div className="w-60">
@@ -144,8 +145,9 @@ const InteractiveMap = () => {
                       <Button 
                         size="sm" 
                         className="w-full text-xs bg-estate-navy hover:bg-estate-navy/90"
+                        asChild
                       >
-                        View Details
+                        <Link to={`/property/${property.id}`}>View Details</Link>
                       </Button>
                     </div>
                   </Popup>
@@ -156,8 +158,8 @@ const InteractiveMap = () => {
         </div>
         
         <div className="text-center mt-8">
-          <Button variant="outline" size="lg">
-            View Full Map
+          <Button variant="outline" size="lg" asChild>
+            <Link to="/map">View Full Map</Link>
           </Button>
         </div>
       </div>

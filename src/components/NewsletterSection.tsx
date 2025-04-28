@@ -1,6 +1,6 @@
 
 import { Button } from '@/components/ui/button';
-import { MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Calendar, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const NewsletterSection = () => {
@@ -30,33 +30,28 @@ const NewsletterSection = () => {
           
           <div>
             <h2 className="text-xl font-playfair font-semibold mb-4 text-white">
-              Quick Links
+              Office Hours
             </h2>
-            <ul className="space-y-2 text-gray-300">
-              <li>
-                <Link to="/properties" className="hover:text-estate-gold transition-colors">
-                  All Properties
-                </Link>
+            <ul className="space-y-3 text-gray-300">
+              <li className="flex items-start">
+                <Clock className="h-5 w-5 mr-3 text-estate-gold mt-1" />
+                <div>
+                  <p className="font-medium">Monday - Friday</p>
+                  <p>9:00 AM - 6:00 PM</p>
+                </div>
               </li>
-              <li>
-                <Link to="/properties?type=buy" className="hover:text-estate-gold transition-colors">
-                  Properties for Sale
-                </Link>
+              <li className="flex items-start">
+                <Calendar className="h-5 w-5 mr-3 text-estate-gold mt-1" />
+                <div>
+                  <p className="font-medium">Saturday</p>
+                  <p>10:00 AM - 4:00 PM</p>
+                </div>
               </li>
-              <li>
-                <Link to="/properties?type=rent" className="hover:text-estate-gold transition-colors">
-                  Properties for Rent
-                </Link>
-              </li>
-              <li>
-                <Link to="/map" className="hover:text-estate-gold transition-colors">
-                  Interactive Map
-                </Link>
-              </li>
-              <li>
-                <Link to="/agents" className="hover:text-estate-gold transition-colors">
-                  Our Agents
-                </Link>
+              <li className="flex items-start">
+                <MessageCircle className="h-5 w-5 mr-3 text-estate-gold mt-1" />
+                <div>
+                  <p>Schedule a consultation with one of our agents</p>
+                </div>
               </li>
             </ul>
           </div>

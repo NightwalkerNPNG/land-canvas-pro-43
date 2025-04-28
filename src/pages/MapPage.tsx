@@ -281,6 +281,7 @@ const MapPage = () => {
                       <Marker 
                         key={property.id} 
                         position={property.coordinates}
+                        icon={markerIcon}
                       >
                         <Popup>
                           <div className="w-60">
@@ -300,8 +301,9 @@ const MapPage = () => {
                             <Button 
                               size="sm" 
                               className="w-full text-xs bg-estate-navy hover:bg-estate-navy/90"
+                              asChild
                             >
-                              View Details
+                              <Link to={`/property/${property.id}`}>View Details</Link>
                             </Button>
                           </div>
                         </Popup>
