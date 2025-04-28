@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { User, Search, Menu } from 'lucide-react';
+import { Menu, Home, MapPin } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -18,6 +18,10 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
+          <Link to="/" className="text-sm font-medium hover:text-estate-gold transition-colors">
+            <Home className="h-4 w-4 inline mr-1" />
+            Home
+          </Link>
           <Link to="/properties" className="text-sm font-medium hover:text-estate-gold transition-colors">
             Properties
           </Link>
@@ -32,17 +36,7 @@ const Header = () => {
           </Link>
         </nav>
         
-        <div className="hidden md:flex items-center gap-4">
-          <Button size="sm" variant="ghost" className="gap-1">
-            <Search className="h-4 w-4" />
-            <span>Search</span>
-          </Button>
-          
-          <Button size="sm" variant="outline" className="gap-1">
-            <User className="h-4 w-4" />
-            <span>Login</span>
-          </Button>
-          
+        <div className="hidden md:flex items-center">
           <Button size="sm" className="bg-estate-navy hover:bg-estate-navy/90">
             List Property
           </Button>
@@ -61,6 +55,14 @@ const Header = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-white py-4 px-4 shadow-lg animate-fade-in">
           <nav className="flex flex-col space-y-3">
+            <Link 
+              to="/" 
+              className="text-sm font-medium p-2 hover:bg-estate-lightGray rounded flex items-center"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Home className="h-4 w-4 mr-2" />
+              Home
+            </Link>
             <Link 
               to="/properties" 
               className="text-sm font-medium p-2 hover:bg-estate-lightGray rounded"
@@ -90,17 +92,7 @@ const Header = () => {
               Contact
             </Link>
             
-            <div className="pt-2 flex flex-col gap-2">
-              <Button size="sm" variant="outline" className="w-full justify-start gap-2">
-                <Search className="h-4 w-4" />
-                <span>Search</span>
-              </Button>
-              
-              <Button size="sm" variant="outline" className="w-full justify-start gap-2">
-                <User className="h-4 w-4" />
-                <span>Login</span>
-              </Button>
-              
+            <div className="pt-2">
               <Button size="sm" className="w-full bg-estate-navy hover:bg-estate-navy/90">
                 List Property
               </Button>

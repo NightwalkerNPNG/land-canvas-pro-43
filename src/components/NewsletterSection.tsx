@@ -1,52 +1,83 @@
 
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { Mail } from 'lucide-react';
-import { toast } from 'sonner';
+import { MapPin, Phone, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const NewsletterSection = () => {
-  const [email, setEmail] = useState('');
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      toast.success("You've been subscribed to our newsletter!");
-      setEmail('');
-    } else {
-      toast.error("Please enter a valid email address.");
-    }
-  };
-
   return (
     <section className="py-16 bg-estate-navy">
       <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-playfair font-semibold mb-2 text-white">
-            Stay Updated
-          </h2>
-          <p className="text-gray-300 mb-8">
-            Subscribe to our newsletter to receive the latest updates on new property listings, market trends, and exclusive offers.
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h2 className="text-xl font-playfair font-semibold mb-4 text-white">
+              Contact Us
+            </h2>
+            <ul className="space-y-4 text-gray-300">
+              <li className="flex items-start">
+                <MapPin className="h-5 w-5 mr-3 text-estate-gold mt-1" />
+                <span>123 Estate Street, New York, NY 10001, United States</span>
+              </li>
+              <li className="flex items-center">
+                <Phone className="h-5 w-5 mr-3 text-estate-gold" />
+                <span>+1 (555) 123-4567</span>
+              </li>
+              <li className="flex items-center">
+                <Mail className="h-5 w-5 mr-3 text-estate-gold" />
+                <span>info@estatepro.com</span>
+              </li>
+            </ul>
+          </div>
           
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-grow relative">
-              <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="w-full pl-11 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-estate-gold"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <Button type="submit" className="bg-estate-gold hover:bg-estate-gold/90 text-white py-3">
-              Subscribe
+          <div>
+            <h2 className="text-xl font-playfair font-semibold mb-4 text-white">
+              Quick Links
+            </h2>
+            <ul className="space-y-2 text-gray-300">
+              <li>
+                <Link to="/properties" className="hover:text-estate-gold transition-colors">
+                  All Properties
+                </Link>
+              </li>
+              <li>
+                <Link to="/properties?type=buy" className="hover:text-estate-gold transition-colors">
+                  Properties for Sale
+                </Link>
+              </li>
+              <li>
+                <Link to="/properties?type=rent" className="hover:text-estate-gold transition-colors">
+                  Properties for Rent
+                </Link>
+              </li>
+              <li>
+                <Link to="/map" className="hover:text-estate-gold transition-colors">
+                  Interactive Map
+                </Link>
+              </li>
+              <li>
+                <Link to="/agents" className="hover:text-estate-gold transition-colors">
+                  Our Agents
+                </Link>
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h2 className="text-xl font-playfair font-semibold mb-4 text-white">
+              Find Your Dream Property
+            </h2>
+            <p className="text-gray-300 mb-4">
+              EstatePro is your trusted partner for finding the perfect property. 
+              Whether buying, selling, or renting, our experienced team is here to help.
+            </p>
+            <Button 
+              className="bg-estate-gold hover:bg-estate-gold/90 text-white px-6"
+              asChild
+            >
+              <Link to="/properties">
+                Browse Properties
+              </Link>
             </Button>
-          </form>
-          
-          <p className="text-gray-400 text-sm mt-4">
-            We respect your privacy. Unsubscribe at any time.
-          </p>
+          </div>
         </div>
       </div>
     </section>

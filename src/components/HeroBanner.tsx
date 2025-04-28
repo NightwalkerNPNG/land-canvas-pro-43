@@ -2,9 +2,42 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const HeroBanner = () => {
-  const [searchType, setSearchType] = useState<'buy' | 'rent'>('buy');
+  const navigate = useNavigate();
+  const [searchType, setSearchType] = useState<'all' | 'buy' | 'rent'>('all');
+  const [propertyType, setPropertyType] = useState('');
+  const [location, setLocation] = useState('');
+  const [priceRange, setPriceRange] = useState('');
+
+  const handleSearch = () => {
+    // Construct query parameters for filtering
+    const params = new URLSearchParams();
+    
+    if (searchType !== 'all') {
+      params.append('type', searchType);
+    }
+    
+    if (propertyType) {
+      params.append('propertyType', propertyType);
+    }
+    
+    if (location) {
+      params.append('location', location);
+    }
+    
+    if (priceRange) {
+      params.append('priceRange', priceRange);
+    }
+    
+    // Navigate to properties page with filters applied
+    navigate(`/properties?${params.toString()}`);
+    toast.success('Searching for properties...', {
+      description: `${searchType === 'all' ? 'All properties' : searchType === 'buy' ? 'Properties for sale' : 'Properties for rent'} ${propertyType ? `of type ${propertyType}` : ''} ${location ? `in ${location}` : ''}`
+    });
+  };
 
   return (
     <div className="relative h-[600px] md:h-[650px]">
@@ -29,6 +62,16 @@ const HeroBanner = () => {
             <div className="flex justify-center space-x-4 mb-6">
               <button
                 className={`px-6 py-2 font-medium rounded-full transition duration-200 ${
+                  searchType === 'all'
+                    ? 'bg-estate-navy text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+                onClick={() => setSearchType('all')}
+              >
+                All
+              </button>
+              <button
+                className={`px-6 py-2 font-medium rounded-full transition duration-200 ${
                   searchType === 'buy'
                     ? 'bg-estate-navy text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -51,7 +94,11 @@ const HeroBanner = () => {
             
             <div className="flex flex-col md:flex-row gap-3">
               <div className="flex-grow">
-                <select className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-estate-gold">
+                <select 
+                  className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-estate-gold"
+                  value={propertyType}
+                  onChange={(e) => setPropertyType(e.target.value)}
+                >
                   <option value="">Property Type</option>
                   <option value="house">House</option>
                   <option value="apartment">Apartment</option>
@@ -65,11 +112,17 @@ const HeroBanner = () => {
                   type="text"
                   placeholder="Location"
                   className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-estate-gold"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
                 />
               </div>
               
               <div className="flex-grow">
-                <select className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-estate-gold">
+                <select 
+                  className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-estate-gold"
+                  value={priceRange}
+                  onChange={(e) => setPriceRange(e.target.value)}
+                >
                   <option value="">Price Range</option>
                   <option value="0-100000">Up to $100,000</option>
                   <option value="100000-250000">$100,000 - $250,000</option>
@@ -79,7 +132,10 @@ const HeroBanner = () => {
                 </select>
               </div>
               
-              <Button className="h-12 bg-estate-gold hover:bg-estate-gold/90 text-white">
+              <Button 
+                className="h-12 bg-estate-gold hover:bg-estate-gold/90 text-white"
+                onClick={handleSearch}
+              >
                 <Search className="h-5 w-5 mr-2" />
                 Search
               </Button>

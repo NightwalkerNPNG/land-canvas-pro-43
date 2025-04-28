@@ -119,16 +119,12 @@ const InteractiveMap = () => {
             style={{ height: '100%', width: '100%' }}
           >
             <MapContent center={mapCenter} zoom={mapZoom}>
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              />
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               
               {propertyLocations.map((property) => (
                 <Marker 
                   key={property.id} 
                   position={property.coordinates}
-                  icon={markerIcon}
                 >
                   <Popup>
                     <div className="w-60">

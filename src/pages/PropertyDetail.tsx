@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
@@ -164,7 +163,6 @@ const PropertyDetail = () => {
           
           <div className="mb-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              {/* Image gallery */}
               <div className="lg:col-span-8">
                 <div className="mb-2 rounded-lg overflow-hidden h-[400px] md:h-[500px] shadow-md">
                   <img 
@@ -193,7 +191,6 @@ const PropertyDetail = () => {
                 </div>
               </div>
               
-              {/* Property details sidebar */}
               <div className="lg:col-span-4">
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                   <h3 className="font-playfair font-semibold text-lg mb-4 text-estate-navy">
@@ -313,7 +310,6 @@ const PropertyDetail = () => {
             </div>
           </div>
           
-          {/* Description */}
           <div className="mb-8 bg-white rounded-lg shadow-md p-6">
             <h3 className="font-playfair font-semibold text-xl mb-4 text-estate-navy">
               About This Property
@@ -325,7 +321,6 @@ const PropertyDetail = () => {
             </div>
           </div>
           
-          {/* Features */}
           <div className="mb-8 bg-white rounded-lg shadow-md p-6">
             <h3 className="font-playfair font-semibold text-xl mb-4 text-estate-navy">
               Features and Amenities
@@ -340,7 +335,6 @@ const PropertyDetail = () => {
             </div>
           </div>
           
-          {/* Map */}
           <div className="mb-8 bg-white rounded-lg shadow-md p-6">
             <h3 className="font-playfair font-semibold text-xl mb-4 text-estate-navy">
               Location
@@ -350,14 +344,8 @@ const PropertyDetail = () => {
                 style={{ height: '100%', width: '100%' }}
               >
                 <MapContent center={propertyDetails.coordinates} zoom={14}>
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  />
-                  <Marker 
-                    position={propertyDetails.coordinates}
-                    icon={markerIcon}
-                  >
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  <Marker position={propertyDetails.coordinates}>
                     <Popup>
                       {propertyDetails.title}<br />
                       {propertyDetails.address}

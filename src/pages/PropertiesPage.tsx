@@ -1,5 +1,5 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PropertyCard, { PropertyCardProps } from '@/components/PropertyCard';
@@ -109,33 +109,98 @@ const mockProperties: PropertyCardProps[] = [
   },
 ];
 
+type SortOption = 'price_asc' | 'price_desc' | 'newest' | 'popular';
+
 const PropertiesPage = () => {
-  const [priceRange, setPriceRange] = useState([0, 5000000]);
-  const [areaRange, setAreaRange] = useState([0, 20000]);
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isMobile = useIsMobile();
+  
+  // Filter state
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000000]);
+  const [areaRange, setAreaRange] = useState<[number, number]>([0, 20000]);
   const [listingType, setListingType] = useState<'all' | 'sale' | 'rent'>('all');
   const [propertyType, setPropertyType] = useState('all');
   const [filterVisible, setFilterVisible] = useState(false);
-  const isMobile = useIsMobile();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState<SortOption>('price_asc');
   
-  const filteredProperties = mockProperties.filter(property => {
+  // Handle URL query params on initial load
+  useEffect(() => {
+    const type = searchParams.get('type');
+    if (type === 'buy') {
+      setListingType('sale');
+    } else if (type === 'rent') {
+      setListingType('rent');
+    }
+    
+    const propType = searchParams.get('propertyType');
+    if (propType) {
+      setPropertyType(propType);
+    }
+    
+    const locationParam = searchParams.get('location');
+    if (locationParam) {
+      setSearchTerm(locationParam);
+    }
+    
+    const priceRangeParam = searchParams.get('priceRange');
+    if (priceRangeParam) {
+      const [min, max] = priceRangeParam.split('-');
+      
+      if (max === '+') {
+        setPriceRange([parseInt(min), 5000000]);
+      } else {
+        setPriceRange([parseInt(min), parseInt(max)]);
+      }
+    }
+  }, [searchParams]);
+  
+  // Filter and sort properties based on all criteria
+  const filteredAndSortedProperties = mockProperties.filter(property => {
+    // Filter by listing type
     const matchesListingType = 
       listingType === 'all' || 
       (listingType === 'sale' && property.priceUnit !== 'rent') ||
       (listingType === 'rent' && property.priceUnit === 'rent');
     
+    // Filter by property type
     const matchesPropertyType = 
       propertyType === 'all' || 
       property.type.toLowerCase() === propertyType.toLowerCase();
     
+    // Filter by price range
     const matchesPriceRange = 
       property.price >= priceRange[0] && 
       property.price <= priceRange[1];
     
+    // Filter by area range
     const matchesAreaRange = 
       !property.area || 
       (property.area >= areaRange[0] && property.area <= areaRange[1]);
+    
+    // Filter by search term
+    const matchesSearchTerm = 
+      !searchTerm || 
+      property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      property.location.toLowerCase().includes(searchTerm.toLowerCase());
       
-    return matchesListingType && matchesPropertyType && matchesPriceRange && matchesAreaRange;
+    return matchesListingType && matchesPropertyType && matchesPriceRange && matchesAreaRange && matchesSearchTerm;
+  }).sort((a, b) => {
+    switch (sortBy) {
+      case 'price_asc':
+        return a.price - b.price;
+      case 'price_desc':
+        return b.price - a.price;
+      case 'newest':
+        // For demo purposes using ID as a proxy for newest
+        return parseInt(b.id) - parseInt(a.id); 
+      case 'popular':
+        // For demo purposes using area as a proxy for popularity
+        return (b.area || 0) - (a.area || 0);
+      default:
+        return 0;
+    }
   });
 
   const toggleFilters = () => {
@@ -167,8 +232,10 @@ const PropertiesPage = () => {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <input
                     type="text"
-                    placeholder="Search by location..."
+                    placeholder="Search by location or title..."
                     className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
                 <Button 
@@ -206,8 +273,10 @@ const PropertiesPage = () => {
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                       <input
                         type="text"
-                        placeholder="Search by location..."
+                        placeholder="Search by location or title..."
                         className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
                   </div>
@@ -330,12 +399,20 @@ const PropertiesPage = () => {
                         type="text"
                         placeholder="Enter city or zip code"
                         className="w-full p-2 border rounded"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
                   </div>
                   
                   <div className="pt-2">
-                    <Button className="w-full bg-estate-navy hover:bg-estate-navy/90">
+                    <Button 
+                      className="w-full bg-estate-navy hover:bg-estate-navy/90"
+                      onClick={() => {
+                        setSearchParams({});
+                        setFilterVisible(false);
+                      }}
+                    >
                       Apply Filters
                     </Button>
                   </div>
@@ -346,22 +423,26 @@ const PropertiesPage = () => {
               <div className={`w-full ${isMobile && filterVisible ? 'hidden' : 'block'} md:w-3/4`}>
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                   <h2 className="text-xl font-playfair font-semibold mb-2 md:mb-0">
-                    {filteredProperties.length} Properties Found
+                    {filteredAndSortedProperties.length} Properties Found
                   </h2>
                   <div className="flex items-center">
                     <span className="mr-2 text-sm text-gray-600">Sort by:</span>
-                    <select className="border rounded-md p-1.5 text-sm bg-white">
-                      <option>Price (Low to High)</option>
-                      <option>Price (High to Low)</option>
-                      <option>Newest First</option>
-                      <option>Most Popular</option>
+                    <select 
+                      className="border rounded-md p-1.5 text-sm bg-white"
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    >
+                      <option value="price_asc">Price (Low to High)</option>
+                      <option value="price_desc">Price (High to Low)</option>
+                      <option value="newest">Newest First</option>
+                      <option value="popular">Most Popular</option>
                     </select>
                   </div>
                 </div>
                 
-                {filteredProperties.length > 0 ? (
+                {filteredAndSortedProperties.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredProperties.map((property) => (
+                    {filteredAndSortedProperties.map((property) => (
                       <PropertyCard key={property.id} {...property} />
                     ))}
                   </div>
@@ -376,6 +457,7 @@ const PropertiesPage = () => {
                       setAreaRange([0, 20000]);
                       setListingType('all');
                       setPropertyType('all');
+                      setSearchTerm('');
                     }}>
                       Reset Filters
                     </Button>
@@ -383,7 +465,7 @@ const PropertiesPage = () => {
                 )}
                 
                 {/* Pagination */}
-                {filteredProperties.length > 0 && (
+                {filteredAndSortedProperties.length > 0 && (
                   <div className="flex justify-center mt-10">
                     <nav className="flex items-center space-x-2">
                       <Button variant="outline" size="sm" disabled>

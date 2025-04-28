@@ -1,6 +1,9 @@
+
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 export interface PropertyCardProps {
   id: string;
@@ -27,6 +30,8 @@ const PropertyCard = ({
   type,
   imageUrl,
 }: PropertyCardProps) => {
+  const [isFavorite, setIsFavorite] = useState(false);
+  
   const formatPrice = (value: number) => {
     if (value >= 1000000) {
       return `$${(value / 1000000).toFixed(1)}M`;
@@ -34,6 +39,18 @@ const PropertyCard = ({
       return `$${(value / 1000).toFixed(0)}K`;
     }
     return `$${value}`;
+  };
+
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFavorite(!isFavorite);
+    
+    if (!isFavorite) {
+      toast.success(`Added ${title} to favorites`);
+    } else {
+      toast.success(`Removed ${title} from favorites`);
+    }
   };
 
   return (
@@ -51,8 +68,11 @@ const PropertyCard = ({
           variant="ghost" 
           size="icon" 
           className="absolute top-2 right-2 bg-white bg-opacity-80 rounded-full p-1.5 hover:bg-white"
+          onClick={toggleFavorite}
         >
-          <Heart className="h-5 w-5 text-estate-navy" />
+          <Heart 
+            className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-estate-navy'}`} 
+          />
         </Button>
         
         <div className="absolute bottom-2 left-2">

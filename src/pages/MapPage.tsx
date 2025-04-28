@@ -7,6 +7,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { PropertyCardProps } from '@/components/PropertyCard';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 // Define icon for map markers
 const markerIcon = L.icon({
@@ -112,14 +113,12 @@ const MapLayerControl = () => {
     });
     
     if (layer === 'satellite') {
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-      }).addTo(map);
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
     } else {
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
     }
+    
+    toast.success(`Map view changed to ${layer}`);
   };
   
   return (
@@ -144,9 +143,43 @@ const MapLayerControl = () => {
 };
 
 const MapPage = () => {
+  const [propertyType, setPropertyType] = useState('All Types');
+  const [priceMin, setPriceMin] = useState('');
+  const [priceMax, setPriceMax] = useState('');
+  const [location, setLocation] = useState('');
+  const [filteredProperties, setFilteredProperties] = useState(propertyLocations);
+  
   // Default center for US
   const defaultCenter: [number, number] = [37.0902, -95.7129];
   const defaultZoom = 4;
+  
+  const handleFilterChange = () => {
+    let filtered = [...propertyLocations];
+    
+    // Filter by property type
+    if (propertyType !== 'All Types') {
+      filtered = filtered.filter(property => property.type === propertyType);
+    }
+    
+    // Filter by price range
+    if (priceMin) {
+      filtered = filtered.filter(property => property.price >= Number(priceMin));
+    }
+    
+    if (priceMax) {
+      filtered = filtered.filter(property => property.price <= Number(priceMax));
+    }
+    
+    // Filter by location (case-insensitive partial match)
+    if (location) {
+      filtered = filtered.filter(property => 
+        property.location.toLowerCase().includes(location.toLowerCase())
+      );
+    }
+    
+    setFilteredProperties(filtered);
+    toast.success(`Found ${filtered.length} properties matching your criteria`);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -177,12 +210,16 @@ const MapPage = () => {
                     <label className="block text-sm font-medium mb-1">
                       Property Type
                     </label>
-                    <select className="w-full p-2 border rounded">
-                      <option value="">All Types</option>
-                      <option value="house">House</option>
-                      <option value="apartment">Apartment</option>
-                      <option value="land">Land</option>
-                      <option value="commercial">Commercial</option>
+                    <select 
+                      className="w-full p-2 border rounded"
+                      value={propertyType}
+                      onChange={(e) => setPropertyType(e.target.value)}
+                    >
+                      <option value="All Types">All Types</option>
+                      <option value="House">House</option>
+                      <option value="Apartment">Apartment</option>
+                      <option value="Land">Land</option>
+                      <option value="Commercial">Commercial</option>
                     </select>
                   </div>
                   
@@ -195,11 +232,15 @@ const MapPage = () => {
                         type="text" 
                         placeholder="Min" 
                         className="w-full p-2 border rounded"
+                        value={priceMin}
+                        onChange={(e) => setPriceMin(e.target.value)}
                       />
                       <input 
                         type="text" 
                         placeholder="Max" 
                         className="w-full p-2 border rounded"
+                        value={priceMax}
+                        onChange={(e) => setPriceMax(e.target.value)}
                       />
                     </div>
                   </div>
@@ -212,11 +253,16 @@ const MapPage = () => {
                       type="text" 
                       placeholder="City, State" 
                       className="w-full p-2 border rounded"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
                     />
                   </div>
                   
                   <div className="pt-2">
-                    <Button className="w-full bg-estate-navy hover:bg-estate-navy/90">
+                    <Button 
+                      className="w-full bg-estate-navy hover:bg-estate-navy/90"
+                      onClick={handleFilterChange}
+                    >
                       Apply Filters
                     </Button>
                   </div>
@@ -229,16 +275,12 @@ const MapPage = () => {
                   className="rounded-lg"
                 >
                   <MapContent center={defaultCenter} zoom={defaultZoom}>
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     
-                    {propertyLocations.map((property) => (
+                    {filteredProperties.map((property) => (
                       <Marker 
                         key={property.id} 
                         position={property.coordinates}
-                        icon={markerIcon}
                       >
                         <Popup>
                           <div className="w-60">
