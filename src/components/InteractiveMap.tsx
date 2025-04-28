@@ -100,10 +100,9 @@ const InteractiveMap = () => {
           style={{ height: mapHeight }}
         >
           <MapContainer 
-            center={mapCenter} 
-            zoom={mapZoom} 
+            center={mapCenter}
+            zoom={mapZoom}
             style={{ height: '100%', width: '100%' }}
-            attributionControl={!isMobile} // Hide attribution on mobile
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -332,8 +332,8 @@ const PropertyDetail = () => {
             </h3>
             <div className="h-[400px] rounded-lg overflow-hidden">
               <MapContainer 
-                center={propertyDetails.coordinates} 
-                zoom={14} 
+                center={propertyDetails.coordinates}
+                zoom={14}
                 style={{ height: '100%', width: '100%' }}
               >
                 <TileLayer
@@ -341,7 +341,7 @@ const PropertyDetail = () => {
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
                 <Marker 
-                  position={propertyDetails.coordinates} 
+                  position={propertyDetails.coordinates}
                   icon={markerIcon}
                 >
                   <Popup>

@@ -210,8 +210,8 @@ const MapPage = () => {
               
               <div className="w-full md:w-3/4 bg-white rounded-lg shadow-md h-[700px] relative">
                 <MapContainer 
-                  center={defaultCenter} 
-                  zoom={defaultZoom} 
+                  center={defaultCenter}
+                  zoom={defaultZoom}
                   style={{ height: '100%', width: '100%' }}
                   className="rounded-lg"
                 >
@@ -223,7 +223,7 @@ const MapPage = () => {
                   {propertyLocations.map((property) => (
                     <Marker 
                       key={property.id} 
-                      position={property.coordinates} 
+                      position={property.coordinates}
                       icon={markerIcon}
                     >
                       <Popup>
