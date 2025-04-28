@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -100,20 +99,21 @@ const InteractiveMap = () => {
           style={{ height: mapHeight }}
         >
           <MapContainer 
-            center={mapCenter} 
-            zoom={mapZoom} 
+            defaultCenter={mapCenter} 
+            defaultZoom={mapZoom} 
             style={{ height: '100%', width: '100%' }}
-            zoomControl={!isMobile} // Hide zoom control on mobile
+            attributionControl={!isMobile} // Hide attribution on mobile
           >
             <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             
             {propertyLocations.map((property) => (
               <Marker 
                 key={property.id} 
                 position={property.coordinates} 
+                eventHandlers={{}} // Empty eventHandlers to avoid TS errors
                 icon={markerIcon}
               >
                 <Popup>

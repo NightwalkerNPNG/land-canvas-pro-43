@@ -129,6 +129,10 @@ const MapLayerControl = () => {
 };
 
 const MapPage = () => {
+  // Default center for US
+  const defaultCenter: [number, number] = [37.0902, -95.7129];
+  const defaultZoom = 4;
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -206,14 +210,14 @@ const MapPage = () => {
               
               <div className="w-full md:w-3/4 bg-white rounded-lg shadow-md h-[700px] relative">
                 <MapContainer 
-                  center={[37.0902, -95.7129]} 
-                  zoom={4} 
+                  defaultCenter={defaultCenter} 
+                  defaultZoom={defaultZoom} 
                   style={{ height: '100%', width: '100%' }}
                   className="rounded-lg"
                 >
                   <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   />
                   
                   {propertyLocations.map((property) => (
@@ -221,6 +225,7 @@ const MapPage = () => {
                       key={property.id} 
                       position={property.coordinates} 
                       icon={markerIcon}
+                      eventHandlers={{}} // Empty eventHandlers to avoid TS errors
                     >
                       <Popup>
                         <div className="w-60">
