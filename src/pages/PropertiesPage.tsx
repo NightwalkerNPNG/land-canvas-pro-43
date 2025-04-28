@@ -7,6 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Filter, MapPin, Search, X } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { 
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const mockProperties: PropertyCardProps[] = [
   {
@@ -118,7 +126,9 @@ const PropertiesPage = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
   
   const handlePriceRangeChange = (values: number[]) => {
-    setPriceRange([values[0], values[1]]);
+    if (values.length === 2) {
+      setPriceRange([values[0], values[1]]);
+    }
   };
 
   const [areaRange, setAreaRange] = useState<[number, number]>([0, 20000]);
@@ -200,6 +210,9 @@ const PropertiesPage = () => {
   const toggleFilters = () => {
     setFilterVisible(!filterVisible);
   };
+
+  const totalPages = Math.ceil(filteredAndSortedProperties.length / 9);
+  const showPagination = totalPages > 1;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -409,25 +422,29 @@ const PropertiesPage = () => {
                 </div>
               )}
               
-              {filteredAndSortedProperties.length > 0 && (
+              {showPagination && filteredAndSortedProperties.length > 0 && (
                 <div className="flex justify-center mt-10">
-                  <nav className="flex items-center space-x-2">
-                    <Button variant="outline" size="sm" disabled>
-                      Previous
-                    </Button>
-                    <Button variant="outline" size="sm" className="bg-estate-navy text-white">
-                      1
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      2
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      3
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      Next
-                    </Button>
-                  </nav>
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious href="#" />
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationLink href="#" isActive>
+                          1
+                        </PaginationLink>
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationLink href="#">2</PaginationLink>
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationLink href="#">3</PaginationLink>
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationNext href="#" />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
                 </div>
               )}
             </div>

@@ -5,13 +5,13 @@ import 'leaflet/dist/leaflet.css';
 import { PropertyCardProps } from './PropertyCard';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Fix for Leaflet marker icons with Webpack/Vite
 import L from 'leaflet';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 // Define icon for map markers
-const markerIcon = L.icon({
+const markerIcon = new L.Icon({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
@@ -117,43 +117,43 @@ const InteractiveMap = () => {
         >
           <MapContainer 
             style={{ height: '100%', width: '100%' }}
+            center={mapCenter}
+            zoom={mapZoom}
           >
-            <MapContent center={mapCenter} zoom={mapZoom}>
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              
-              {propertyLocations.map((property) => (
-                <Marker 
-                  key={property.id} 
-                  position={property.coordinates}
-                  icon={markerIcon}
-                >
-                  <Popup>
-                    <div className="w-60">
-                      <img 
-                        src={property.imageUrl} 
-                        alt={property.title} 
-                        className="w-full h-32 object-cover rounded mb-2"
-                      />
-                      <h3 className="font-medium text-sm">{property.title}</h3>
-                      <p className="text-estate-navy font-semibold text-sm">
-                        {property.priceUnit === 'rent' 
-                          ? `$${property.price}/month` 
-                          : `$${property.price.toLocaleString()}`
-                        }
-                      </p>
-                      <p className="text-xs text-gray-500 mb-2">{property.location}</p>
-                      <Button 
-                        size="sm" 
-                        className="w-full text-xs bg-estate-navy hover:bg-estate-navy/90"
-                        asChild
-                      >
-                        <Link to={`/property/${property.id}`}>View Details</Link>
-                      </Button>
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContent>
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            
+            {propertyLocations.map((property) => (
+              <Marker 
+                key={property.id} 
+                position={property.coordinates}
+                icon={markerIcon}
+              >
+                <Popup>
+                  <div className="w-60">
+                    <img 
+                      src={property.imageUrl} 
+                      alt={property.title} 
+                      className="w-full h-32 object-cover rounded mb-2"
+                    />
+                    <h3 className="font-medium text-sm">{property.title}</h3>
+                    <p className="text-estate-navy font-semibold text-sm">
+                      {property.priceUnit === 'rent' 
+                        ? `$${property.price}/month` 
+                        : `$${property.price.toLocaleString()}`
+                      }
+                    </p>
+                    <p className="text-xs text-gray-500 mb-2">{property.location}</p>
+                    <Button 
+                      size="sm" 
+                      className="w-full text-xs bg-estate-navy hover:bg-estate-navy/90"
+                      asChild
+                    >
+                      <Link to={`/property/${property.id}`}>View Details</Link>
+                    </Button>
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
           </MapContainer>
         </div>
         
