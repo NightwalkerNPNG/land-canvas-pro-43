@@ -210,8 +210,8 @@ const MapPage = () => {
               
               <div className="w-full md:w-3/4 bg-white rounded-lg shadow-md h-[700px] relative">
                 <MapContainer 
-                  defaultCenter={defaultCenter} 
-                  defaultZoom={defaultZoom} 
+                  center={defaultCenter} 
+                  zoom={defaultZoom} 
                   style={{ height: '100%', width: '100%' }}
                   className="rounded-lg"
                 >
@@ -225,7 +225,6 @@ const MapPage = () => {
                       key={property.id} 
                       position={property.coordinates} 
                       icon={markerIcon}
-                      eventHandlers={{}} // Empty eventHandlers to avoid TS errors
                     >
                       <Popup>
                         <div className="w-60">

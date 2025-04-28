@@ -332,8 +332,8 @@ const PropertyDetail = () => {
             </h3>
             <div className="h-[400px] rounded-lg overflow-hidden">
               <MapContainer 
-                defaultCenter={propertyDetails.coordinates} 
-                defaultZoom={14} 
+                center={propertyDetails.coordinates} 
+                zoom={14} 
                 style={{ height: '100%', width: '100%' }}
               >
                 <TileLayer
@@ -343,7 +343,6 @@ const PropertyDetail = () => {
                 <Marker 
                   position={propertyDetails.coordinates} 
                   icon={markerIcon}
-                  eventHandlers={{}} // Empty eventHandlers to avoid TS errors
                 >
                   <Popup>
                     {propertyDetails.title}<br />

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -99,8 +100,8 @@ const InteractiveMap = () => {
           style={{ height: mapHeight }}
         >
           <MapContainer 
-            defaultCenter={mapCenter} 
-            defaultZoom={mapZoom} 
+            center={mapCenter} 
+            zoom={mapZoom} 
             style={{ height: '100%', width: '100%' }}
             attributionControl={!isMobile} // Hide attribution on mobile
           >
@@ -112,8 +113,7 @@ const InteractiveMap = () => {
             {propertyLocations.map((property) => (
               <Marker 
                 key={property.id} 
-                position={property.coordinates} 
-                eventHandlers={{}} // Empty eventHandlers to avoid TS errors
+                position={property.coordinates}
                 icon={markerIcon}
               >
                 <Popup>
